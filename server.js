@@ -13,7 +13,7 @@ const normalizePort = val => {
     }
     return false;
 }
-//lance le serveur express et normalise le port
+//définis le serveur et normalise le port
 const port = normalizePort(process.env.PORT || '3000')
 app.set('port', port);
 
@@ -36,7 +36,7 @@ const errorHandler = error => {
     }
 };
 
-
+//lance le serveur
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
@@ -45,5 +45,5 @@ server.on('listening', () => {
     const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
     console.log('Listening on ' + bind);
 })
-
+//demande au serveur d'écouter le port
 server.listen(port);
