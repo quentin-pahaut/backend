@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const app = express();
+const Thing = require('./models/thing')
 
 mongoose.connect('mongodb+srv://myfirstmongodb:mypassword@cluster0.x0np60r.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -25,7 +26,7 @@ app.post('/api/stuff', (req,res,next) =>{
   delete req.body._id;
 
   //Crée une instance du modèle de donnée Things pour l'envoi à la DB
-  const thing = new Things({
+  const thing = new Thing({
     // on vas récupérer le body de la requête POST envoyée à l'API
     //
     //
@@ -54,7 +55,7 @@ app.post('/api/stuff', (req,res,next) =>{
     --> .then() renvoie un statut 200 avec un json contenant un message de réussite
     --> .catch() renvoie un statut 400 d'erreur et un json contenant l'erreur
   */
-  Thing.save()
+  thing.save()
     .then(()=> res.status(201).json({ message: 'Objet renregistré !'}))
     .catch((error => res.status(400).json({ error })));
 })
