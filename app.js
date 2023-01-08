@@ -19,10 +19,44 @@ app.use((req, res, next) => {
   });
 
 app.post('/api/stuff', (req,res,next) =>{
-    console.log(req.body);
-    res.status(201).json({
-        message: 'Objet créé :D'
-    })
+
+  //Le front renvoie un Id, il n'est pas le même que celui qui sera généré par mongoDB
+  // Il faut donc le supprimer
+  delete req.body._id;
+
+  //Crée une instance du modèle de donnée Things pour l'envoi à la DB
+  const thing = new Things({
+    // on vas récupérer le body de la requête POST envoyée à l'API
+    //
+    //
+    /* SOIT version normale (complète)
+
+    title: req.body.title,
+    description: req.body.description,
+    imageUrl: req.body.imageUrl,
+    userId: req.body.userId,
+    price: req.body.price,
+
+    */
+
+    //
+    //
+
+    /* SOIT version Spread Operator 
+    ...req.body 
+    --> vas chercher tous les éléments et structure d'un objet
+    --> décompose(EN:spread) en fonction de sa structure et éléments (ici la strucure du POST reçu)
+    */
+    ...req.body
+  });
+  /*On sauvegarde les données dans la DB en appellant sa méthode save()
+    Ensuite on envoi des promises en retour au front-end
+    --> .then() renvoie un statut 200 avec un json contenant un message de réussite
+    --> .catch() renvoie un statut 400 d'erreur et un json contenant l'erreur
+  */
+  Thing.save()
+    .then(()=> res.status(201).json({ message: 'Objet renregistré !'}))
+    .catch((error => res.status(400).json({ error })));
 })
 
 app.get('/api/stuff', (req, res, next) => {
